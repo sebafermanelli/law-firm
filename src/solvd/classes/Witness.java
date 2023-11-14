@@ -1,11 +1,15 @@
 package solvd.classes;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import solvd.exceptions.WitnessTestimonyException;
 import solvd.interfaces.WitnessTestimony;
 
 import java.util.Objects;
 
 public class Witness extends Person implements WitnessTestimony {
+  private static final Logger LOGGER = LogManager.getLogger(Witness.class);
+
   private String contactInfo;
 
   public Witness(String name, String contactInfo) {
@@ -52,7 +56,7 @@ public class Witness extends Person implements WitnessTestimony {
   public void provideTestimony(LegalCase legalCase) throws WitnessTestimonyException {
 //    Verificar que el testigo sea parte del caso, de lo contrario que no pueda testificar
     if(true) {
-      System.out.println("Witness providing a testimony on the case");
+      LOGGER.info("Witness providing a testimony on the case");
     } else {
       throw new WitnessTestimonyException("Error in testimony process");
     }

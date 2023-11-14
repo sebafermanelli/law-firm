@@ -10,8 +10,8 @@ import java.util.Objects;
 public class Lawyer extends LegalAssistant implements LegalPractitioner {
   protected String license;
 
-  public Lawyer(String name, int experienceYears, String[] tasks, LegalSpecialization specialization, String license) {
-    super(name, experienceYears, tasks, specialization);
+  public Lawyer(String name, int experienceYears, LegalSpecialization specialization, String license) {
+    super(name, experienceYears, specialization);
     this.license = license;
   }
 
@@ -26,9 +26,9 @@ public class Lawyer extends LegalAssistant implements LegalPractitioner {
   @Override
   public String toString() {
     return "Lawyer{" +
-            "license=" + license +
+            "license='" + license + '\'' +
             ", specialization=" + specialization +
-            ", tasks='" + Arrays.toString(tasks) + '\'' +
+            ", tasks=" + tasks +
             ", experienceYears=" + experienceYears +
             ", name='" + name + '\'' +
             '}';

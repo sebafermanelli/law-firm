@@ -8,28 +8,28 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class Judge extends Lawyer implements CourtOfficial {
-  private String courtRoomNumber;
+  private Court court;
 
-  public Judge(String name, int experienceYears, String[] tasks, LegalSpecialization specialization, String license, String courtRoomNumber) {
-    super(name, experienceYears, tasks, specialization, license);
-    this.courtRoomNumber = courtRoomNumber;
+  public Judge(String name, int experienceYears, LegalSpecialization specialization, String license, Court court) {
+    super(name, experienceYears, specialization, license);
+    this.court = court;
   }
 
-  public String getCourtRoomNumber() {
-    return courtRoomNumber;
+  public Court getCourt() {
+    return court;
   }
 
-  public void setCourtRoomNumber(String courtRoomNumber) {
-    this.courtRoomNumber = courtRoomNumber;
+  public void setCourt(Court court) {
+    this.court = court;
   }
 
   @Override
   public String toString() {
     return "Judge{" +
-            "courtRoomNumber='" + courtRoomNumber + '\'' +
-            ", license=" + license +
+            "court=" + court +
+            ", license='" + license + '\'' +
             ", specialization=" + specialization +
-            ", tasks='" + Arrays.toString(tasks) + '\'' +
+            ", tasks=" + tasks +
             ", experienceYears=" + experienceYears +
             ", name='" + name + '\'' +
             '}';
@@ -41,12 +41,12 @@ public class Judge extends Lawyer implements CourtOfficial {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     Judge judge = (Judge) o;
-    return Objects.equals(getCourtRoomNumber(), judge.getCourtRoomNumber());
+    return Objects.equals(getCourt(), judge.getCourt());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getCourtRoomNumber());
+    return Objects.hash(super.hashCode(), getCourt());
   }
 
   @Override

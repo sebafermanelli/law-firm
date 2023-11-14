@@ -10,8 +10,8 @@ import java.util.Objects;
 public class LegalAssistant extends LegalSecretary implements Documentable {
   protected LegalSpecialization specialization;
 
-  public LegalAssistant(String name, int experienceYears, String[] tasks, LegalSpecialization specialization) {
-    super(name, experienceYears, tasks);
+  public LegalAssistant(String name, int experienceYears, LegalSpecialization specialization) {
+    super(name, experienceYears);
     this.specialization = specialization;
   }
 
@@ -27,7 +27,7 @@ public class LegalAssistant extends LegalSecretary implements Documentable {
   public String toString() {
     return "LegalAssistant{" +
             "specialization=" + specialization +
-            ", tasks=" + Arrays.toString(tasks) +
+            ", tasks=" + tasks +
             ", experienceYears=" + experienceYears +
             ", name='" + name + '\'' +
             '}';
