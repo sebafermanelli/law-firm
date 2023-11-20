@@ -5,7 +5,6 @@ import com.solvd.classes.Lawyer;
 import com.solvd.classes.LegalDocument;
 import com.solvd.classes.Witness;
 import com.solvd.exceptions.*;
-import org.solvd.exceptions.*;
 
 public interface CaseManager {
   void addDocument(LegalDocument document) throws LegalDocumentExistException,

@@ -42,6 +42,6 @@ public class Client extends Person {
 
   @Override
   public void displayPersonInfo() {
-    System.out.println("Client Information: " + toString());
+    System.out.println("Client Information: " + this);
   }
 }

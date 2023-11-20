@@ -2,8 +2,6 @@ package com.solvd.interfaces;
 
 import com.solvd.classes.*;
 import com.solvd.exceptions.*;
-import org.solvd.classes.*;
-import org.solvd.exceptions.*;
 
 public interface LawFirmManager {
   void addSecretary(LegalSecretary secretary) throws LegalSecretaryExistException;

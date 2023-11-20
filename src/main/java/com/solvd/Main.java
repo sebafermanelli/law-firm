@@ -7,8 +7,6 @@ import com.solvd.exceptions.*;
 import com.solvd.lists.CustomLinkedList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.solvd.classes.*;
-import org.solvd.exceptions.*;
 
 import java.util.Comparator;
 import java.util.Date;

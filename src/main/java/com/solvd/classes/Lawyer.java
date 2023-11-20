@@ -1,5 +1,7 @@
 package com.solvd.classes;
 
+import com.solvd.enums.CaseStatus;
+import com.solvd.enums.LegalSpecialization;
 import com.solvd.exceptions.InvalidSpecializationException;
 import com.solvd.exceptions.LawyerExistException;
 import com.solvd.exceptions.LegalCaseExistException;
@@ -7,8 +9,6 @@ import com.solvd.exceptions.LegalCaseStatusException;
 import com.solvd.interfaces.LegalPractitioner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import com.solvd.enums.CaseStatus;
-import com.solvd.enums.LegalSpecialization;
 
 import java.util.Objects;
 
@@ -56,7 +56,7 @@ public class Lawyer extends LegalAssistant implements LegalPractitioner {
 
   @Override
   public void displayPersonInfo() {
-    LOGGER.info("Lawyer Information: " + toString());
+    LOGGER.info("Lawyer Information: " + this);
   }
 
   @Override

@@ -4,7 +4,6 @@ import com.solvd.exceptions.*;
 import com.solvd.interfaces.LawFirmManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.solvd.exceptions.*;
 
 import java.util.HashSet;
 

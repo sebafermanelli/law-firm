@@ -51,7 +51,7 @@ public class LegalSecretary extends LegalPerson implements TaskManager {
 
   @Override
   public void displayPersonInfo() {
-    LOGGER.info("Legal Secretary Information: " + toString());
+    LOGGER.info("Legal Secretary Information: " + this);
   }
 
   @Override

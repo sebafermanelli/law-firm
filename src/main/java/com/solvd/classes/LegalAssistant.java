@@ -1,11 +1,10 @@
 package com.solvd.classes;
 
+import com.solvd.enums.LegalSpecialization;
 import com.solvd.exceptions.*;
 import com.solvd.interfaces.Documentable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import com.solvd.enums.LegalSpecialization;
-import org.solvd.exceptions.*;
 
 import java.util.Objects;
 
@@ -47,7 +46,7 @@ public class LegalAssistant extends LegalSecretary implements Documentable {
 
   @Override
   public void displayPersonInfo() {
-    LOGGER.info("Legal Assistant Information: " + toString());
+    LOGGER.info("Legal Assistant Information: " + this);
   }
 
   @Override

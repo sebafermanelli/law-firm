@@ -1,12 +1,11 @@
 package com.solvd.classes;
 
+import com.solvd.enums.CaseStatus;
+import com.solvd.enums.LegalSpecialization;
 import com.solvd.exceptions.*;
 import com.solvd.interfaces.CaseManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import com.solvd.enums.CaseStatus;
-import com.solvd.enums.LegalSpecialization;
-import org.solvd.exceptions.*;
 
 import java.util.HashSet;
 import java.util.Objects;

@@ -1,11 +1,11 @@
 package com.solvd.classes;
 
+import com.solvd.enums.CaseStatus;
 import com.solvd.exceptions.LegalCaseStatusException;
 import com.solvd.exceptions.WitnessTestimonyException;
 import com.solvd.interfaces.WitnessTestimony;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import com.solvd.enums.CaseStatus;
 
 import java.util.Objects;
 
@@ -28,7 +28,7 @@ public class Witness extends Person implements WitnessTestimony {
 
   @Override
   public void displayPersonInfo() {
-    LOGGER.info("Witness Information: " + toString());
+    LOGGER.info("Witness Information: " + this);
   }
 
   @Override

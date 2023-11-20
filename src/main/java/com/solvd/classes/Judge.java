@@ -1,12 +1,12 @@
 package com.solvd.classes;
 
+import com.solvd.enums.CaseStatus;
+import com.solvd.enums.LegalSpecialization;
 import com.solvd.exceptions.InvalidSpecializationException;
 import com.solvd.exceptions.LegalCaseStatusException;
 import com.solvd.interfaces.CourtOfficial;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import com.solvd.enums.CaseStatus;
-import com.solvd.enums.LegalSpecialization;
 
 import java.util.Objects;
 
@@ -77,7 +77,7 @@ public class Judge extends LegalPerson implements CourtOfficial {
 
   @Override
   public void displayPersonInfo() {
-    LOGGER.info("Judge Information: " + toString());
+    LOGGER.info("Judge Information: " + this);
   }
 
   @Override
