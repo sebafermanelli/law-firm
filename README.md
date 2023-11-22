@@ -68,3 +68,9 @@ Practice 8
     - Generate a conflict in a merge
     - Make a pull request with branches
     - Make a pull request with forks
+
+Practice 9
+
+- Extended your previous homework with next features:
+    - Read text from the file and calculate the numbers of the unique words. Write the result to the file. The main requirement is: using
+      StringUtils and FileUtils to implement it with minimum lines of code.
