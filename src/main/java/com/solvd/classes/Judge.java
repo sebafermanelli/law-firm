@@ -1,14 +1,16 @@
 package com.solvd.classes;
 
 import com.solvd.enums.CaseStatus;
+import com.solvd.enums.DocumentStatus;
 import com.solvd.enums.LegalSpecialization;
-import com.solvd.exceptions.InvalidSpecializationException;
-import com.solvd.exceptions.LegalCaseStatusException;
+import com.solvd.exceptions.*;
 import com.solvd.interfaces.CourtOfficial;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Judge extends LegalPerson implements CourtOfficial {
   private static final Logger LOGGER = LogManager.getLogger(Judge.class);
@@ -43,9 +45,8 @@ public class Judge extends LegalPerson implements CourtOfficial {
   }
 
   public void setCourt(Court court) throws InvalidSpecializationException {
-    if (!specialization.equals(court.getCourtType())) {
-      throw new InvalidSpecializationException("The specialization does not apply for this " +
-              "court");
+    if (!specialization.equals(court.getCourtType().getJUDGE_SPECIALIZATION())) {
+      throw new InvalidSpecializationException("The specialization does not apply for this court");
     }
     this.court = court;
   }
@@ -81,26 +82,42 @@ public class Judge extends LegalPerson implements CourtOfficial {
   }
 
   @Override
-  public void evaluateCase(LegalCase legalCase) throws LegalCaseStatusException, InvalidSpecializationException {
+  public void evaluateCase(LegalCase legalCase) throws LegalCaseStatusException, InvalidSpecializationException, LegalDocumentStatusException, LegalDocumentListEmptyException {
     if (!legalCase.getStatus().equals(CaseStatus.OPEN)) {
       throw new LegalCaseStatusException("The status of the case is not open");
     }
-    if (!specialization.equals(legalCase.getCaseType())) {
+    // Check if any document of the case were not approved
+    List<DocumentStatus> documentsNotApprovedList = legalCase.getDocuments().stream()
+            .map(LegalDocument::getDocumentStatus)
+            .filter(status -> !status.equals(DocumentStatus.APPROVED))
+            .collect(Collectors.toList());
+    if (!documentsNotApprovedList.isEmpty()) {
+      throw new LegalDocumentStatusException("Any document status of the case were not approved");
+    }
+    if (!specialization.equals(legalCase.getCaseType().getCOURT_TYPE().getJUDGE_SPECIALIZATION())) {
       throw new InvalidSpecializationException("The specialization does not apply for this case");
     }
-    legalCase.setStatus(CaseStatus.IN_PROCESS);
-    LOGGER.info("Judge evaluating the case, changing to in process status...");
+    legalCase.changeCaseStatus(CaseStatus.IN_PROGRESS, status -> legalCase.setStatus(status));
+    LOGGER.info("Judge evaluating the case, changing to in progress status...");
   }
 
   @Override
-  public void closeCase(LegalCase legalCase) throws LegalCaseStatusException, InvalidSpecializationException {
-    if (!legalCase.getStatus().equals(CaseStatus.IN_PROCESS)) {
-      throw new LegalCaseStatusException("The status of the case is not in process");
+  public void closeCase(LegalCase legalCase) throws LegalCaseStatusException, InvalidSpecializationException, LegalDocumentListEmptyException, LegalDocumentStatusException {
+    if (!legalCase.getStatus().equals(CaseStatus.IN_PROGRESS)) {
+      throw new LegalCaseStatusException("The status of the case is not in progress");
     }
-    if (!specialization.equals(legalCase.getCaseType())) {
+    // Check if any document of the case were not approved
+    List<DocumentStatus> documentsNotApprovedList = legalCase.getDocuments().stream()
+            .map(LegalDocument::getDocumentStatus)
+            .filter(status -> !status.equals(DocumentStatus.APPROVED))
+            .collect(Collectors.toList());
+    if (!documentsNotApprovedList.isEmpty()) {
+      throw new LegalDocumentStatusException("Any document status of the case were not approved");
+    }
+    if (!specialization.equals(legalCase.getCaseType().getCOURT_TYPE().getJUDGE_SPECIALIZATION())) {
       throw new InvalidSpecializationException("The specialization does not apply for this case");
     }
-    legalCase.setStatus(CaseStatus.CLOSED);
+    legalCase.changeCaseStatus(CaseStatus.CLOSED, status -> legalCase.setStatus(status));
     LOGGER.info("Judge closing the case, changing to closed status...");
   }
 }

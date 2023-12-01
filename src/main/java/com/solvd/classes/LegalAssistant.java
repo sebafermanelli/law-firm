@@ -27,7 +27,12 @@ public class LegalAssistant extends LegalSecretary implements Documentable {
 
   @Override
   public String toString() {
-    return "LegalAssistant{" + "specialization=" + specialization + ", tasks=" + tasks + ", experienceYears=" + experienceYears + ", name='" + name + '\'' + '}';
+    return "LegalAssistant{" +
+            "specialization=" + specialization +
+            ", tasks=" + tasks +
+            ", experienceYears=" + experienceYears +
+            ", name='" + name + '\'' +
+            '}';
   }
 
   @Override
@@ -50,8 +55,8 @@ public class LegalAssistant extends LegalSecretary implements Documentable {
   }
 
   @Override
-  public void addDocument(LegalCase legalCase, LegalDocument document) throws InvalidSpecializationException, LegalDocumentExistException, LegalCaseStatusException, InvalidLegalDocumentException {
-    if (!specialization.equals(legalCase.getCaseType())) {
+  public void addDocument(LegalCase legalCase, LegalDocument document) throws InvalidSpecializationException, LegalDocumentExistException, LegalCaseStatusException, InvalidLegalDocumentException, LegalDocumentStatusException {
+    if (!specialization.equals(legalCase.getCaseType().getLEGAL_SPECIALIZATION())) {
       throw new InvalidSpecializationException("The specialization does not apply for this case");
     }
     legalCase.addDocument(document);
@@ -59,7 +64,7 @@ public class LegalAssistant extends LegalSecretary implements Documentable {
 
   @Override
   public void deleteDocument(LegalCase legalCase, LegalDocument document) throws LegalDocumentNotFoundException, LegalCaseStatusException, InvalidLegalDocumentException, InvalidSpecializationException {
-    if (!specialization.equals(legalCase.getCaseType())) {
+    if (!specialization.equals(legalCase.getCaseType().getLEGAL_SPECIALIZATION())) {
       throw new InvalidSpecializationException("The specialization does not apply for this case");
     }
     legalCase.deleteDocument(document);

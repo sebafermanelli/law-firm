@@ -27,6 +27,15 @@ public class LegalSecretary extends LegalPerson implements TaskManager {
   }
 
   @Override
+  public String toString() {
+    return "LegalSecretary{" +
+            "tasks=" + tasks +
+            ", experienceYears=" + experienceYears +
+            ", name='" + name + '\'' +
+            '}';
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
@@ -38,15 +47,6 @@ public class LegalSecretary extends LegalPerson implements TaskManager {
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), getTasks());
-  }
-
-  @Override
-  public String toString() {
-    return "LegalSecretary{" +
-            "tasks=" + tasks +
-            ", experienceYears=" + experienceYears +
-            ", name='" + name + '\'' +
-            '}';
   }
 
   @Override

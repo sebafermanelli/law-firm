@@ -1,5 +1,6 @@
 package com.solvd.classes;
 
+import com.solvd.enums.CourtType;
 import com.solvd.enums.LegalSpecialization;
 
 import java.util.Objects;
@@ -7,9 +8,9 @@ import java.util.Objects;
 public class Court {
   private String name;
   private String location;
-  private LegalSpecialization courtType;
+  private CourtType courtType;
 
-  public Court(String name, String location, LegalSpecialization courtType) {
+  public Court(String name, String location, CourtType courtType) {
     this.name = name;
     this.location = location;
     this.courtType = courtType;
@@ -31,11 +32,11 @@ public class Court {
     this.location = location;
   }
 
-  public LegalSpecialization getCourtType() {
+  public CourtType getCourtType() {
     return courtType;
   }
 
-  public void setCourtType(LegalSpecialization courtType) {
+  public void setCourtType(CourtType courtType) {
     this.courtType = courtType;
   }
 

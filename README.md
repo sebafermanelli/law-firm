@@ -52,7 +52,8 @@ Practice 6
 
 - Extended your previous homework with next features:
     - Add 5 collections to the hierarchy.
-    - Create custom LinkedList with generic.
+
+- Create custom LinkedList with generic.
 
 Practice 7
 
@@ -64,13 +65,25 @@ Practice 7
 
 Practice 8
 
-- Extended your previous homework with next features:
-    - Generate a conflict in a merge
-    - Make a pull request with branches
-    - Make a pull request with forks
+- Generate a conflict in a merge
+- Make a pull request with branches
+- Make a pull request with forks
 
 Practice 9
 
+- Read text from the file and calculate the numbers of the unique words. Write the result to the file. The main requirement is: using
+  StringUtils and FileUtils to implement it with minimum lines of code.
+
+Practice 10
+
 - Extended your previous homework with next features:
-    - Read text from the file and calculate the numbers of the unique words. Write the result to the file. The main requirement is: using
-      StringUtils and FileUtils to implement it with minimum lines of code.
+    - Use at least 5 lambda functions from the java.util.function package.
+    - Create 3 custom Lambda functions with generics.
+    - Create 5 complex Enums(with fields, methods, blocks).
+
+Practice 11
+
+- Extended your previous homework with next features:
+    - Add 7 collection streaming in the hierarchy with terminal and non-terminal operations.
+    - Using reflection extract information(modifiers, return types, parameters, etc) about fields, constructors, methods. Create object and call
+      method using the only reflection.

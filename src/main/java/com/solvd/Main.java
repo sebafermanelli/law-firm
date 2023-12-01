@@ -1,15 +1,21 @@
 package com.solvd;
 
 import com.solvd.classes.*;
-import com.solvd.enums.DocumentType;
-import com.solvd.enums.LegalSpecialization;
+import com.solvd.enums.*;
 import com.solvd.exceptions.*;
-import com.solvd.lists.CustomLinkedList;
+import com.solvd.custom.CustomLinkedList;
+import com.solvd.interfaces.functional.TestifyFunction;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Comparator;
-import java.util.Date;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Main {
   private static final Logger LOGGER = LogManager.getLogger(Main.class);
@@ -64,7 +70,7 @@ public class Main {
       LOGGER.error(e.getMessage());
     }
 
-    Court court1 = new Court("New York County Supreme Court", "60 Centre St, New York, NY 10007, United States", LegalSpecialization.FAMILY_LAW);
+    Court court1 = new Court("New York County Supreme Court", "60 Centre St, New York, NY 10007, United States", CourtType.FAMILY_LAW);
     Judge judge1 = new Judge("Alice Jones", 6, "JN-9285", LegalSpecialization.FAMILY_LAW);
     // Adding the court to the judge to evaluate legal cases
     try {
@@ -73,40 +79,54 @@ public class Main {
       LOGGER.error(e.getMessage());
     }
 
-    LegalCase legalCase = new LegalCase("CN-1829", "Divorce with Lana", LegalSpecialization.FAMILY_LAW);
-    // Addming a document, witness and lawyer to the case. Adding the case to the law firm cases
+    LegalCase legalCase = new LegalCase("CN-1829", "Divorce with Lana", CaseType.FAMILY);
+    // Adding a document, witness and lawyer to the case. Adding the case to the law firm cases
     try {
-      LegalDocument document1 = new LegalDocument(DocumentType.FAMILY_LAW_DIVORCE, new Date());
+      LegalDocument document1 = new LegalDocument(DocumentType.DIVORCE, new Date(), DocumentStatus.DRAFT);
+      // Changing the document status to approved to add to the case
+      document1.changeDocumentStatus(DocumentStatus.APPROVED, status -> {
+        LOGGER.info("Document change their status to " + status.getDESCRIPTION());
+        document1.setDocumentStatus(status);
+      });
       legalCase.addDocument(document1);
-
       Witness witness1 = new Witness("Henry Aguirre", "+5493413927478");
       legalCase.addWitness(witness1);
-
       lawyer1.createCase(legalCase);
-    } catch (InvalidSpecializationException | LegalCaseExistException |
-             LegalDocumentExistException | LegalCaseStatusException |
-             InvalidLegalDocumentException | WitnessExistException | LawyerExistException e) {
+    } catch (InvalidSpecializationException | LegalCaseExistException | LegalDocumentExistException | LegalCaseStatusException |
+             InvalidLegalDocumentException | WitnessExistException | LawyerExistException | LegalDocumentStatusException e) {
       LOGGER.error(e.getMessage());
     }
 
     // Judge evaluating a OPEN case
     try {
       judge1.evaluateCase(legalCase);
-    } catch (LegalCaseStatusException | InvalidSpecializationException e) {
+    } catch (LegalCaseStatusException | InvalidSpecializationException | LegalDocumentListEmptyException | LegalDocumentStatusException e) {
       LOGGER.error(e.getMessage());
     }
 
-    // Judge closing a IN PROCESS case
+    // Witnesses providing testimony information to the specified case
+    TestifyFunction<Witness, LegalCase> testifyFunction = (witness, c) -> {
+      LOGGER.info(witness.getName() + " providing a testimony in the case " + c.getCaseNumber());
+    };
+    legalCase.getWitnesses().forEach(witness -> {
+      try {
+        witness.provideTestimony(legalCase, testifyFunction);
+      } catch (WitnessTestimonyException | LegalCaseStatusException e) {
+        LOGGER.error(e.getMessage());
+      }
+    });
+
+    // Judge closing an IN PROGRESS case
     try {
       judge1.closeCase(legalCase);
-    } catch (LegalCaseStatusException | InvalidSpecializationException e) {
+    } catch (LegalCaseStatusException | InvalidSpecializationException | LegalDocumentListEmptyException | LegalDocumentStatusException e) {
       LOGGER.error(e.getMessage());
     }
 
     // Lawyer archiving a CLOSED case
     try {
       lawyer1.archiveCase(legalCase);
-    } catch (LegalCaseStatusException | InvalidSpecializationException e) {
+    } catch (LegalCaseStatusException | InvalidSpecializationException | LegalDocumentListEmptyException | LegalDocumentStatusException e) {
       LOGGER.error(e.getMessage());
     }
 
@@ -117,15 +137,117 @@ public class Main {
     numbers.add(5);
     numbers.add(1);
     numbers.add(2);
-
     numbers.display();
-
     numbers.remove(5);
-    LOGGER.warn("The number 5 was removed from the list!");
+    LOGGER.info("The number 5 was removed from the list!");
+    numbers.display();
+    numbers.sort(Comparator.naturalOrder());
+    LOGGER.info("The list was sorted by natural order!");
     numbers.display();
 
-    numbers.sort(Comparator.naturalOrder());
-    LOGGER.warn("The list was sorted by natural order!");
-    numbers.display();
+    // Read text from the file and calculate the numbers of the unique words. Write the result to the file
+    try {
+      File file = new File(Objects.requireNonNull(Main.class.getClassLoader().getResource("file.txt")).getFile());
+      List<String> lines = FileUtils.readLines(file, "UTF-8");
+      String[] allWords = StringUtils.split(lines.toString(), " ");
+      Set<String> uniqueWords = new HashSet<>();
+      Arrays.stream(allWords).forEach(word -> {
+        word = StringUtils.strip(word, ".,");
+        uniqueWords.add(word);
+      });
+//      FileUtils.writeStringToFile(file, "Amount of unique words in the file: " + uniqueWords.size(), "UTF-8", false);
+      LOGGER.info("Amount of unique words in the file: " + uniqueWords.size());
+    } catch (IOException e) {
+      LOGGER.error(e.getMessage());
+    }
+
+    // Lambda functions
+    // Predicate - Lambda function to check if a lawyer specialization is Family Law (lawyer input, boolean output)
+    Predicate<Lawyer> lawyerSpecializationPredicate = lawyer -> lawyer.getSpecialization().equals(LegalSpecialization.FAMILY_LAW);
+    LOGGER.info("Is Liam Anderson specialized at Family Law? " + lawyerSpecializationPredicate.test(lawyer2));
+
+    // Function - Lambda function to concatenate the lawyers name and years of experience (lawyer input, string output)
+    Function<Lawyer, String> lawyerConcatenateFunction = lawyer -> lawyer.getName() + " - Years of experience: " + lawyer.getExperienceYears();
+    LOGGER.info(lawyerConcatenateFunction.apply(lawyer1));
+
+    // Consumer - Lambda function to print the displayPersonInfo() of an a lawyer (lawyer input, no output)
+    Consumer<Lawyer> lawyerInfoConsumer = lawyer -> lawyer.displayPersonInfo();
+    lawyerInfoConsumer.accept(lawyer3);
+
+    // Supplier - Lambda function to get a the law firm name (no input, double output)
+    Supplier<String> lawFirmNameSupplier = () -> LawFirm.getInstance().getName();
+    LOGGER.info(lawFirmNameSupplier.get());
+
+    // BiPredicate - Lambda function to compare 2 lawyers specialization (2 lawyers input, boolean output)
+    BiPredicate<Lawyer, Lawyer> lawyerSpecializationBiPredicate =
+            (l1, l2) -> l1.getSpecialization().equals(l2.getSpecialization());
+    LOGGER.info(lawyer4.getName() + " and " + lawyer2.getName() + " has the same specialization? " + lawyerSpecializationBiPredicate.test(lawyer4,
+            lawyer2));
+
+    //Collections streaming
+    try {
+      Set<String> lawyers5YearExperience = lawFirm.getLawyers().stream()
+              .filter(lawyer -> lawyer.getExperienceYears() > 5)
+              .map(lawyer -> lawyer.getName())
+              .collect(Collectors.toSet());
+      lawyers5YearExperience.forEach(lawyer -> {
+        LOGGER.info(lawyer + " is a lawyer with more than 5 years of experience");
+      });
+    } catch (LawyerListEmptyException e) {
+       LOGGER.error(e.getMessage());
+    }
+
+    try {
+      Set<LegalCase> openCases = lawFirm.getCases().stream()
+              .filter(c -> c.getStatus().equals(CaseStatus.OPEN))
+              .collect(Collectors.toSet());
+      openCases.forEach(c -> {
+        LOGGER.info(c.getCaseNumber() + " case is opened");
+      });
+    } catch (LegalCaseListEmptyException e) {
+       LOGGER.error(e.getMessage());
+    }
+
+    try {
+      Set<String> laborLawAssistants = lawFirm.getAssistants().stream()
+              .filter(assistant -> assistant.getSpecialization().equals(LegalSpecialization.LABOR_LAW))
+              .map(assistant -> assistant.getName())
+              .collect(Collectors.toSet());
+    } catch (LegalAssistantListEmptyException e) {
+       LOGGER.error(e.getMessage());
+    }
+
+    try {
+      Set<String> clientsFromNY = lawFirm.getClients().stream()
+              .filter(client -> client.getContactInfo().contains("NY"))
+              .map(client -> client.getName())
+              .collect(Collectors.toSet());
+    } catch (ClientListEmptyException e) {
+       LOGGER.error(e.getMessage());
+    }
+
+    try {
+      Set<LegalDocument> draftDocumentsCase1 = legalCase.getDocuments().stream()
+              .filter(document -> document.getDocumentStatus().equals(DocumentStatus.DRAFT))
+              .collect(Collectors.toSet());
+    } catch (LegalDocumentListEmptyException e) {
+       LOGGER.error(e.getMessage());
+    }
+
+    try {
+      Set<LegalDocument> allApprovedDocuments = lawFirm.getCases().stream()
+              .flatMap(c -> {
+                        try {
+                          return c.getDocuments().stream()
+                                  .filter(document -> document.getDocumentStatus().equals(DocumentStatus.APPROVED));
+                        } catch (LegalDocumentListEmptyException e) {
+                           LOGGER.error(e.getMessage());
+                           return Stream.empty();
+                        }
+                      }
+              ).collect(Collectors.toSet());
+    } catch (LegalCaseListEmptyException e) {
+      LOGGER.error(e.getMessage());
+    }
   }
 }

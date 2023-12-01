@@ -1,4 +1,4 @@
-package com.solvd.lists;
+package com.solvd.custom;
 
 import java.util.Comparator;
 

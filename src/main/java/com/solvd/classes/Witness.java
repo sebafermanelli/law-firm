@@ -4,6 +4,7 @@ import com.solvd.enums.CaseStatus;
 import com.solvd.exceptions.LegalCaseStatusException;
 import com.solvd.exceptions.WitnessTestimonyException;
 import com.solvd.interfaces.WitnessTestimony;
+import com.solvd.interfaces.functional.TestifyFunction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -54,13 +55,14 @@ public class Witness extends Person implements WitnessTestimony {
   }
 
   @Override
-  public void provideTestimony(LegalCase legalCase) throws WitnessTestimonyException, LegalCaseStatusException {
+  public void provideTestimony(LegalCase legalCase, TestifyFunction<Witness, LegalCase> testifyFunction) throws WitnessTestimonyException,
+          LegalCaseStatusException {
     if (!legalCase.getWitnesses().contains(this)) {
       throw new WitnessTestimonyException("The witness does not belong to the case");
     }
-    if (!legalCase.getStatus().equals(CaseStatus.IN_PROCESS)) {
+    if (!legalCase.getStatus().equals(CaseStatus.IN_PROGRESS)) {
       throw new LegalCaseStatusException("The status of the case is not in process");
     }
-    LOGGER.info("Providing testimony...");
+    testifyFunction.testify(this, legalCase);
   }
 }

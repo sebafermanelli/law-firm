@@ -8,7 +8,7 @@ import com.solvd.exceptions.*;
 
 public interface CaseManager {
   void addDocument(LegalDocument document) throws LegalDocumentExistException,
-          InvalidLegalDocumentException, LegalCaseStatusException;
+          InvalidLegalDocumentException, LegalCaseStatusException, LegalDocumentStatusException;
 
   void addLawyer(Lawyer lawyer) throws InvalidSpecializationException,
           LawyerExistException, LegalCaseStatusException;

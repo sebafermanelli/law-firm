@@ -1,9 +1,13 @@
 package com.solvd.classes;
 
 import com.solvd.enums.CaseStatus;
-import com.solvd.enums.LegalSpecialization;
+import com.solvd.enums.CaseType;
+import com.solvd.enums.DocumentStatus;
+import com.solvd.enums.DocumentType;
 import com.solvd.exceptions.*;
 import com.solvd.interfaces.CaseManager;
+import com.solvd.interfaces.functional.StatusUpdaterFunction;
+import com.solvd.interfaces.functional.TypeUpdaterFunction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,14 +19,14 @@ public class LegalCase implements CaseManager {
   private String caseNumber;
   private String description;
   private CaseStatus status;
-  private LegalSpecialization caseType;
+  private CaseType caseType;
   private Court court;
   private HashSet<LegalDocument> documents;
   private HashSet<Lawyer> lawyers;
   private HashSet<Client> clients;
   private HashSet<Witness> witnesses;
 
-  public LegalCase(String caseNumber, String description, LegalSpecialization caseType) {
+  public LegalCase(String caseNumber, String description, CaseType caseType) {
     this.caseNumber = caseNumber;
     this.description = description;
     this.status = CaseStatus.OPEN;
@@ -57,11 +61,11 @@ public class LegalCase implements CaseManager {
     this.status = status;
   }
 
-  public LegalSpecialization getCaseType() {
+  public CaseType getCaseType() {
     return caseType;
   }
 
-  public void setCaseType(LegalSpecialization caseType) {
+  public void setCaseType(CaseType caseType) {
     this.caseType = caseType;
   }
 
@@ -143,12 +147,15 @@ public class LegalCase implements CaseManager {
   }
 
   @Override
-  public void addDocument(LegalDocument document) throws LegalDocumentExistException, InvalidLegalDocumentException, LegalCaseStatusException {
+  public void addDocument(LegalDocument document) throws LegalDocumentExistException, InvalidLegalDocumentException, LegalCaseStatusException, LegalDocumentStatusException {
     if (!status.equals(CaseStatus.OPEN)) {
       throw new LegalCaseStatusException("The status of the case is not open");
     }
-    if (!document.getDocumentType().toString().contains(getCaseType().toString())) {
+    if (!document.getDocumentType().getCASE_TYPE().equals(getCaseType())) {
       throw new InvalidLegalDocumentException("The document type are not valid for this case file");
+    }
+    if (!document.getDocumentStatus().equals(DocumentStatus.APPROVED)) {
+      throw new LegalDocumentStatusException("The document status is not approved");
     }
     if (documents.contains(document)) {
       throw new LegalDocumentExistException("The document already exist on this case file");
@@ -162,7 +169,7 @@ public class LegalCase implements CaseManager {
     if (!status.equals(CaseStatus.OPEN)) {
       throw new LegalCaseStatusException("The status of the case is not open");
     }
-    if (!lawyer.getSpecialization().equals(getCaseType())) {
+    if (!lawyer.getSpecialization().equals(getCaseType().getLEGAL_SPECIALIZATION())) {
       throw new InvalidSpecializationException("The lawyer specialization does not apply for this case");
     }
     if (lawyers.contains(lawyer)) {
@@ -201,7 +208,7 @@ public class LegalCase implements CaseManager {
     if (!status.equals(CaseStatus.OPEN)) {
       throw new LegalCaseStatusException("The status of the case is not open");
     }
-    if (!document.getDocumentType().toString().contains(getCaseType().toString())) {
+    if (!document.getDocumentType().getCASE_TYPE().equals(getCaseType())) {
       throw new InvalidLegalDocumentException("The document type are not valid for this case file");
     }
     if (!documents.contains(document)) {
@@ -216,7 +223,7 @@ public class LegalCase implements CaseManager {
     if (!status.equals(CaseStatus.OPEN)) {
       throw new LegalCaseStatusException("The status of the case is not open");
     }
-    if (!lawyer.getSpecialization().equals(getCaseType())) {
+    if (!lawyer.getSpecialization().equals(getCaseType().getLEGAL_SPECIALIZATION())) {
       throw new InvalidSpecializationException("The lawyer specialization does not apply for this case");
     }
     if (!lawyers.contains(lawyer)) {
@@ -248,5 +255,13 @@ public class LegalCase implements CaseManager {
     }
     witnesses.remove(witness);
     LOGGER.info("The witness removed from the case successfully");
+  }
+
+  public void changeCaseStatus(CaseStatus status, StatusUpdaterFunction<CaseStatus> function) {
+    function.changeStatus(status);
+  }
+
+  public void changeCaseType(CaseType type, TypeUpdaterFunction<CaseType> function) {
+    function.changeType(type);
   }
 }

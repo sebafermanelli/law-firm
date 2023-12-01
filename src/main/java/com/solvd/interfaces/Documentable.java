@@ -6,7 +6,7 @@ import com.solvd.exceptions.*;
 
 public interface Documentable {
   void addDocument(LegalCase legalCase, LegalDocument document) throws InvalidLegalDocumentException,
-          LegalDocumentExistException, LegalCaseStatusException, InvalidSpecializationException;
+          LegalDocumentExistException, LegalCaseStatusException, InvalidSpecializationException, LegalDocumentStatusException;
 
   void deleteDocument(LegalCase legalCase, LegalDocument document) throws InvalidLegalDocumentException,
           LegalDocumentNotFoundException, LegalCaseStatusException, InvalidSpecializationException;
