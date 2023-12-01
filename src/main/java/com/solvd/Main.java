@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
@@ -194,7 +195,7 @@ public class Main {
         LOGGER.info(lawyer + " is a lawyer with more than 5 years of experience");
       });
     } catch (LawyerListEmptyException e) {
-       LOGGER.error(e.getMessage());
+      LOGGER.error(e.getMessage());
     }
 
     try {
@@ -205,7 +206,7 @@ public class Main {
         LOGGER.info(c.getCaseNumber() + " case is opened");
       });
     } catch (LegalCaseListEmptyException e) {
-       LOGGER.error(e.getMessage());
+      LOGGER.error(e.getMessage());
     }
 
     try {
@@ -214,7 +215,7 @@ public class Main {
               .map(assistant -> assistant.getName())
               .collect(Collectors.toSet());
     } catch (LegalAssistantListEmptyException e) {
-       LOGGER.error(e.getMessage());
+      LOGGER.error(e.getMessage());
     }
 
     try {
@@ -223,7 +224,7 @@ public class Main {
               .map(client -> client.getName())
               .collect(Collectors.toSet());
     } catch (ClientListEmptyException e) {
-       LOGGER.error(e.getMessage());
+      LOGGER.error(e.getMessage());
     }
 
     try {
@@ -231,7 +232,7 @@ public class Main {
               .filter(document -> document.getDocumentStatus().equals(DocumentStatus.DRAFT))
               .collect(Collectors.toSet());
     } catch (LegalDocumentListEmptyException e) {
-       LOGGER.error(e.getMessage());
+      LOGGER.error(e.getMessage());
     }
 
     try {
@@ -241,12 +242,61 @@ public class Main {
                           return c.getDocuments().stream()
                                   .filter(document -> document.getDocumentStatus().equals(DocumentStatus.APPROVED));
                         } catch (LegalDocumentListEmptyException e) {
-                           LOGGER.error(e.getMessage());
-                           return Stream.empty();
+                          LOGGER.error(e.getMessage());
+                          return Stream.empty();
                         }
                       }
               ).collect(Collectors.toSet());
     } catch (LegalCaseListEmptyException e) {
+      LOGGER.error(e.getMessage());
+    }
+
+    //Reflection
+    Class<Court> courtClass = Court.class;
+    LOGGER.info("Court class fields information: ");
+    for (Field field : courtClass.getDeclaredFields()) {
+      LOGGER.info("Field{" +
+              "name='" + field.getName() + "', " +
+              "type='" + field.getType() + "', " +
+              "modifiers='" + Modifier.toString(field.getModifiers()) + "', "
+      );
+    }
+
+    LOGGER.info("Court class constructors information: ");
+    for (Constructor constructor : courtClass.getDeclaredConstructors()) {
+      LOGGER.info("Constructor{" +
+              "name='" + constructor.getName() + "', " +
+              "parameters='" + Arrays.toString(constructor.getParameters()) + "', " +
+              "modifiers='" + Modifier.toString(constructor.getModifiers()) + "', "
+      );
+    }
+
+    LOGGER.info("Court class methods information: ");
+    for (Method method : courtClass.getDeclaredMethods()) {
+      LOGGER.info("Method{" +
+              "name='" + method.getName() + "', " +
+              "return='" + method.getReturnType() + "', " +
+              "parameters='" + Arrays.toString(method.getParameters()) + "', " +
+              "modifiers='" + Modifier.toString(method.getModifiers()) + "', "
+      );
+    }
+
+    try {
+      Constructor<LegalSecretary> legalSecretaryConstructor = LegalSecretary.class.getDeclaredConstructor(String.class, int.class);
+
+      legalSecretaryConstructor.setAccessible(true);
+      Object newInstance = legalSecretaryConstructor.newInstance("Michael Moore", 3);
+
+      Method displayPersonInfo = LegalSecretary.class.getDeclaredMethod("displayPersonInfo");
+      displayPersonInfo.setAccessible(true);
+
+      Method addTask = LegalSecretary.class.getDeclaredMethod("addTask", String.class);
+      addTask.setAccessible(true);
+
+      addTask.invoke(newInstance, "Task 1");
+      addTask.invoke(newInstance, "Task 2");
+      displayPersonInfo.invoke(newInstance);
+    } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
       LOGGER.error(e.getMessage());
     }
   }
