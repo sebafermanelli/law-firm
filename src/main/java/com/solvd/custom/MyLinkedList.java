@@ -2,7 +2,7 @@ package com.solvd.custom;
 
 import java.util.Comparator;
 
-public class CustomLinkedList<T> {
+public class MyLinkedList<T> {
   private Node<T> head;  // Initial node of the list
   private int size;      // Size of the list
 
